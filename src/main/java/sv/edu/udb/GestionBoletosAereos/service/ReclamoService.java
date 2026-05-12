@@ -36,14 +36,14 @@ public class ReclamoService {
         return convertToResponseDTO(savedReclamo);
     }
 
-    // Método adicional para obtener un reclamo por ID
+    // Metodo adicional para obtener un reclamo por ID
     public ReclamoResponseDTO obtenerReclamo(Integer idReclamo) {
         Reclamo reclamo = reclamoRepository.findById(idReclamo)
                 .orElseThrow(() -> new RuntimeException("Reclamo no encontrado"));
         return convertToResponseDTO(reclamo);
     }
 
-    // Método para obtener todos los reclamos de una reserva
+    // Metodo para obtener todos los reclamos de una reserva
     public List<ReclamoResponseDTO> obtenerReclamosPorReserva(Integer idReserva) {
         List<Reclamo> reclamos = reclamoRepository.findByReservaIdReserva(idReserva);
         return reclamos.stream()

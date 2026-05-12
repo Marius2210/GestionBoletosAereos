@@ -64,7 +64,7 @@ public class AdminAerolineaService {
         return convertToResponseDTO(updatedAerolinea);
     }
 
-    // ✅ ELIMINAR AEROLÍNEA CON VALIDACIONES
+    // Eliminar aerolinea
     @Transactional
     public void eliminarAerolinea(Integer id) {
         Aerolinea aerolinea = aerolineaRepository.findById(id)
@@ -127,6 +127,14 @@ public class AdminAerolineaService {
             }
         }
         return false;
+    }
+
+    // Eliminar aerolínea por código IATA
+    @Transactional
+    public void eliminarAerolineaPorCodigo(String codigoIata) {
+        Aerolinea aerolinea = aerolineaRepository.findByCodigoIata(codigoIata)
+                .orElseThrow(() -> new RuntimeException("Aerolínea no encontrada con código IATA: " + codigoIata));
+        eliminarAerolinea(aerolinea.getIdAerolinea());
     }
 
     // Convertir a DTO

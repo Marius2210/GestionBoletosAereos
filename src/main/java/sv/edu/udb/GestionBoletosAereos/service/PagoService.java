@@ -38,7 +38,7 @@ public class PagoService {
         pago.setMonto(request.getMonto());
         pago.setMetodoPago(request.getMetodoPago());
         pago.setReserva(reserva);
-        pago.setFechaPago(LocalDateTime.now()); // Asegúrate de tener este campo en tu entidad Pago
+        pago.setFechaPago(LocalDateTime.now());
 
         reserva.setEstadoReserva("CONF");
         reservaRepository.save(reserva);
@@ -49,14 +49,14 @@ public class PagoService {
         return convertToResponseDTO(savedPago);
     }
 
-    // Método adicional para obtener un pago por ID (opcional)
+    // Metodo adicional para obtener un pago por ID
     public PagoResponseDTO obtenerPago(Integer idPago) {
         Pago pago = pagoRepository.findById(idPago)
                 .orElseThrow(() -> new RuntimeException("Pago no encontrado"));
         return convertToResponseDTO(pago);
     }
 
-    // Método para obtener pago por reserva (opcional)
+    // Metodo para obtener pago por reserva
     public PagoResponseDTO obtenerPagoPorReserva(Integer idReserva) {
         Pago pago = pagoRepository.findByReservaIdReserva(idReserva)
                 .orElseThrow(() -> new RuntimeException("Pago no encontrado para esta reserva"));

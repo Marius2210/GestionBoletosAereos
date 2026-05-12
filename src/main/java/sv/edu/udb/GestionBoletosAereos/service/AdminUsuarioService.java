@@ -32,6 +32,7 @@ public class AdminUsuarioService {
                 .collect(Collectors.toList());
     }
 
+    // Desactivar usuario
     public UsuarioResponseDTO toggleUsuarioEstado(Integer id) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
