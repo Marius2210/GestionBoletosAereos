@@ -1,8 +1,12 @@
 package sv.edu.udb.GestionBoletosAereos.service;
 
+import org.springframework.transaction.annotation.Transactional;
 import sv.edu.udb.GestionBoletosAereos.dto.PasajeroInfoBasicaDTO;
 import sv.edu.udb.GestionBoletosAereos.dto.UsuarioResponseDTO;
+import sv.edu.udb.GestionBoletosAereos.model.Reserva;
 import sv.edu.udb.GestionBoletosAereos.model.Usuario;
+import sv.edu.udb.GestionBoletosAereos.repository.PasajeroRepository;
+import sv.edu.udb.GestionBoletosAereos.repository.ReservaRepository;
 import sv.edu.udb.GestionBoletosAereos.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +18,12 @@ public class AdminUsuarioService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private PasajeroRepository pasajeroRepository;
+
+    @Autowired
+    private ReservaRepository reservaRepository;
 
     public List<UsuarioResponseDTO> listarTodosLosUsuarios() {
         List<Usuario> usuarios = usuarioRepository.findAll();
@@ -34,6 +44,34 @@ public class AdminUsuarioService {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
         return convertToResponseDTO(usuario);
+    }
+
+    @Transactional
+    public void eliminarUsuario(Integer id) {
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + id));
+
+        // No permitir eliminar administradores
+        if ("ADMIN".equals(usuario.getRol())) {
+            throw new RuntimeException("No se puede eliminar un usuario administrador");
+        }
+
+        // Verificar reservas activas
+        if (usuario.getPasajero() != null) {
+            List<Reserva> reservas = reservaRepository.findByPasajeroIdPasajero(usuario.getPasajero().getIdPasajero());
+            boolean tieneReservasActivas = reservas.stream()
+                    .anyMatch(r -> !"CANCELADA".equals(r.getEstadoReserva()));
+
+            if (tieneReservasActivas) {
+                throw new RuntimeException("No se puede eliminar el usuario porque tiene reservas activas");
+            }
+
+            // Eliminar el pasajero primero
+            pasajeroRepository.delete(usuario.getPasajero());
+        }
+
+        // Eliminar el usuario
+        usuarioRepository.delete(usuario);
     }
 
     private UsuarioResponseDTO convertToResponseDTO(Usuario usuario) {

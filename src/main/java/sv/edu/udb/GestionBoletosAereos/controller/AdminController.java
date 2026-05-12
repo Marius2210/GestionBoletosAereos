@@ -10,7 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -58,6 +61,17 @@ public class AdminController {
     @Operation(summary = "Activar/Desactivar usuario")
     public ResponseEntity<UsuarioResponseDTO> toggleUsuarioEstado(@PathVariable Integer id) {
         return ResponseEntity.ok(adminUsuarioService.toggleUsuarioEstado(id));
+    }
+
+    @DeleteMapping("/usuarios/{id}")
+    @Operation(summary = "Eliminar usuario", description = "Elimina un usuario y su pasajero asociado")
+    public ResponseEntity<Map<String, String>> eliminarUsuario(@PathVariable Integer id) {
+        adminUsuarioService.eliminarUsuario(id);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("mensaje", "Usuario eliminado exitosamente");
+        response.put("id", id.toString());
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/aerolineas")
