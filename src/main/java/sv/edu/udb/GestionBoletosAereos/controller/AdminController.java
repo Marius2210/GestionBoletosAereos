@@ -1,5 +1,6 @@
 package sv.edu.udb.GestionBoletosAereos.controller;
 
+import sv.edu.udb.GestionBoletosAereos.dto.AerolineaResponseDTO;
 import sv.edu.udb.GestionBoletosAereos.dto.UsuarioResponseDTO;
 import sv.edu.udb.GestionBoletosAereos.service.*;
 import sv.edu.udb.GestionBoletosAereos.model.*;
@@ -39,12 +40,16 @@ public class AdminController {
     @Autowired
     private TarifaRepository tarifaRepository;
 
+    @Autowired
+    private AdminAerolineaService adminAerolineaService;
+
     @GetMapping("/estadisticas")
     @Operation(summary = "Estadísticas del sistema")
     public ResponseEntity<?> getEstadisticas() {
         return ResponseEntity.ok(estadisticaService.obtenerEstadisticas());
     }
 
+    //USUARIOS
     @GetMapping("/usuarios")
     @Operation(summary = "Listar todos los usuarios")
     public ResponseEntity<List<UsuarioResponseDTO>> listarUsuarios() {
@@ -74,10 +79,34 @@ public class AdminController {
         return ResponseEntity.ok(response);
     }
 
+    //AEROLINEAS
+    @GetMapping("/aerolineas")
+    @Operation(summary = "Listar todas las aerolíneas")
+    public ResponseEntity<List<AerolineaResponseDTO>> listarAerolineas() {
+        return ResponseEntity.ok(adminAerolineaService.listarTodasAerolineas());
+    }
+
     @PostMapping("/aerolineas")
     @Operation(summary = "Crear aerolínea")
-    public ResponseEntity<Aerolinea> crearAerolinea(@RequestBody Aerolinea aerolinea) {
-        return ResponseEntity.ok(aerolineaRepository.save(aerolinea));
+    public ResponseEntity<AerolineaResponseDTO> crearAerolinea(@RequestBody Aerolinea aerolinea) {
+        return ResponseEntity.ok(adminAerolineaService.crearAerolinea(aerolinea));
+    }
+
+    @PutMapping("/aerolineas/{id}")
+    @Operation(summary = "Actualizar aerolínea")
+    public ResponseEntity<AerolineaResponseDTO> actualizarAerolinea(@PathVariable Integer id,
+                                                                    @RequestBody Aerolinea aerolinea) {
+        return ResponseEntity.ok(adminAerolineaService.actualizarAerolinea(id, aerolinea));
+    }
+
+    @DeleteMapping("/aerolineas/{id}")
+    @Operation(summary = "Eliminar aerolínea")
+    public ResponseEntity<Map<String, String>> eliminarAerolinea(@PathVariable Integer id) {
+        adminAerolineaService.eliminarAerolinea(id);
+        Map<String, String> response = new HashMap<>();
+        response.put("mensaje", "Aerolínea eliminada exitosamente");
+        response.put("id", id.toString());
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/vuelos")

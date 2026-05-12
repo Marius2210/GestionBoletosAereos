@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface VueloRepository extends JpaRepository<Vuelo, Integer> {
+    List<Vuelo> findByAvionIdAvion(Integer idAvion);
     @Query("SELECT v FROM Vuelo v WHERE v.origen = :origen AND v.destino = :destino " +
             "AND DATE(v.fechaSalida) = DATE(:fechaSalida) AND v.estado != 'C'")
     List<Vuelo> findVuelosDisponibles(@Param("origen") String origen,

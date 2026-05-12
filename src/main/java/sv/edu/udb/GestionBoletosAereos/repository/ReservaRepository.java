@@ -8,4 +8,5 @@ import java.util.Optional;
 public interface ReservaRepository extends JpaRepository<Reserva, Integer> {
     List<Reserva> findByPasajeroIdPasajero(Integer idPasajero);
     Optional<Reserva> findByCodigoReserva(String codigoReserva);
+    List<Reserva> findByVueloIdVuelo(Integer idVuelo);
 }
