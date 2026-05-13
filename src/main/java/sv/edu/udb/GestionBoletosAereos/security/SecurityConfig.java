@@ -32,9 +32,11 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**", "/api/vuelos/disponibles",
-                                "/swagger-ui/**", "/v3/api-docs/**",
+                        .requestMatchers("/api/auth/**",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
                                 "/api/usuarios/registrar").permitAll()
+                        .requestMatchers("/api/vuelos/disponibles").authenticated()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )

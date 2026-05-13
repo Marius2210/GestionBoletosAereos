@@ -6,8 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import sv.edu.udb.GestionBoletosAereos.service.AsientoService;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Component
 public class DataInitializer implements CommandLineRunner {
@@ -23,6 +26,15 @@ public class DataInitializer implements CommandLineRunner {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private AsientoService asientoService;
+
+    @Autowired
+    private VueloRepository vueloRepository;
+
+    @Autowired
+    private AsientoVueloRepository asientoVueloRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -43,6 +55,15 @@ public class DataInitializer implements CommandLineRunner {
             ava.setNombreAerolinea("Avianca");
             ava.setCodigoIata("AVA");
             aerolineaRepository.save(ava);
+        }
+
+        // Inicializar asientos para vuelos existentes que no tengan asientos
+        List<Vuelo> vuelos = vueloRepository.findAll();
+        for (Vuelo vuelo : vuelos) {
+            if (asientoVueloRepository.findByVuelo(vuelo).isEmpty()) {
+                asientoService.inicializarAsientosParaVuelo(vuelo);
+                System.out.println("Asientos inicializados para vuelo existente: " + vuelo.getNumeroVuelo());
+            }
         }
     }
 }

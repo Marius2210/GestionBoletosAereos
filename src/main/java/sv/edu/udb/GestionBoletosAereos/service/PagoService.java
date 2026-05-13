@@ -20,6 +20,9 @@ public class PagoService {
     @Autowired
     private ReservaRepository reservaRepository;
 
+    @Autowired
+    private ReservaService reservaService;
+
     @Transactional
     public PagoResponseDTO confirmarPago(PagoRequest request) {
         Reserva reserva = reservaRepository.findById(request.getIdReserva())
@@ -40,8 +43,11 @@ public class PagoService {
         pago.setReserva(reserva);
         pago.setFechaPago(LocalDateTime.now());
 
-        reserva.setEstadoReserva("CONF");
-        reservaRepository.save(reserva);
+        /*reserva.setEstadoReserva("CONF");
+        reservaRepository.save(reserva);*/
+
+        // Confirmar la reserva y ocupar asiento definitivamente
+        reservaService.confirmarReserva(reserva);
 
         Pago savedPago = pagoRepository.save(pago);
 

@@ -28,6 +28,9 @@ public class AdminVueloService {
     @Autowired
     private TripulacionRepository tripulacionRepository;
 
+    @Autowired
+    private AsientoService asientoService;
+
     // Listar todos los vuelos
     public List<VueloResponseDTO> listarTodosLosVuelos() {
         List<Vuelo> vuelos = vueloRepository.findAll();
@@ -86,6 +89,9 @@ public class AdminVueloService {
         }
 
         Vuelo vueloGuardado = vueloRepository.save(vuelo);
+
+        // INICIALIZAR ASIENTOS PARA EL VUELO NUEVO
+        asientoService.inicializarAsientosParaVuelo(vueloGuardado);
 
         // Crear tarifas
         if (vueloDTO.getTarifas() != null && !vueloDTO.getTarifas().isEmpty()) {
