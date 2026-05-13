@@ -22,10 +22,11 @@ public class RegistroRequest {
     private String nacionalidad;
 
     @NotBlank(message = "Email obligatorio")
-    @Email
+    @Email(message = "Formato de email inválido")
     private String email;
 
     @NotBlank(message = "Teléfono obligatorio")
+    @Pattern(regexp = "^[0-9]{8}$", message = "El teléfono debe tener exactamente 8 dígitos (ejemplo: 76546789)")
     private String numTelefono;
 
     @NotBlank(message = "Contraseña obligatoria")
