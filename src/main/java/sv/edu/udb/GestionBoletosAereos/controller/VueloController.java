@@ -23,7 +23,7 @@ public class VueloController {
     @Autowired
     private AsientoService asientoService;
 
-    @GetMapping("/disponibles")
+    @PostMapping("/disponibles")
     @Operation(summary = "Buscar vuelos disponibles", description = "Lista vuelos según origen, destino y fecha")
     public ResponseEntity<?> buscarVuelos(@Valid @RequestBody BusquedaVueloRequest request) {
         return ResponseEntity.ok(vueloService.buscarVuelosDisponibles(request));
