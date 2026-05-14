@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/reservas")
 @Tag(name = "Reservas", description = "Gestión de reservas")
@@ -22,6 +24,14 @@ public class ReservaController {
     @Operation(summary = "Crear reserva", description = "Genera una nueva reserva de vuelo")
     public ResponseEntity<?> crearReserva(@Valid @RequestBody ReservaRequest request) {
         return ResponseEntity.ok(reservaService.crearReserva(request));
+    }
+
+    // Obtener reservas por ID de pasajero
+    @GetMapping("/pasajero/{idPasajero}")
+    @Operation(summary = "Obtener reservas por pasajero", description = "Lista todas las reservas de un pasajero")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<List<ReservaResponseDTO>> obtenerReservasPorPasajero(@PathVariable Integer idPasajero) {
+        return ResponseEntity.ok(reservaService.obtenerReservasPorPasajero(idPasajero));
     }
 
     @GetMapping("/{codigoReserva}")

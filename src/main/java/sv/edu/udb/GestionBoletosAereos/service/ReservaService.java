@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class ReservaService {
@@ -101,6 +103,19 @@ public class ReservaService {
 
         // Convertir a DTO
         return convertToResponseDTO(savedReserva);
+    }
+
+    // Obtener reservas por ID de pasajero
+    public List<ReservaResponseDTO> obtenerReservasPorPasajero(Integer idPasajero) {
+        // Verificar que el pasajero existe
+        Pasajero pasajero = pasajeroRepository.findById(idPasajero)
+                .orElseThrow(() -> new RuntimeException("Pasajero no encontrado con ID: " + idPasajero));
+
+        List<Reserva> reservas = reservaRepository.findByPasajeroIdPasajero(idPasajero);
+
+        return reservas.stream()
+                .map(this::convertToResponseDTO)
+                .collect(Collectors.toList());
     }
 
     public ReservaResponseDTO obtenerReserva(String codigoReserva) {
