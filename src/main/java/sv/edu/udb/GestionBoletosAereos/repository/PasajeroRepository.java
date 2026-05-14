@@ -6,4 +6,5 @@ import java.util.Optional;
 
 public interface PasajeroRepository extends JpaRepository<Pasajero, Integer> {
     Optional<Pasajero> findByNumPasaporte(String numPasaporte);
+    Optional<Pasajero> findByEmail(String email);
 }

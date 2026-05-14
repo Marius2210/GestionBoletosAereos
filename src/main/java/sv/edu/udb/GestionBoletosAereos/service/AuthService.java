@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 public class AuthService {
@@ -38,7 +39,25 @@ public class AuthService {
         Usuario usuario = usuarioRepository.findByEmail(request.getEmail()).orElseThrow();
         String token = jwtUtil.generateToken(usuario.getEmail(), usuario.getRol());
 
-        return new AuthResponse(token, usuario.getEmail(), usuario.getRol());
+        // Buscar el pasajero asociado al usuario
+        Integer idPasajero = null;
+        String nombrePasajero = null;
+
+        // Buscar si el usuario tiene un pasajero asociado
+        if (usuario.getPasajero() != null) {
+            idPasajero = usuario.getPasajero().getIdPasajero();
+            nombrePasajero = usuario.getPasajero().getNombreCompleto();
+        } else {
+            // Buscar por email en la tabla pasajero
+            Optional<Pasajero> pasajeroOpt = pasajeroRepository.findByEmail(usuario.getEmail());
+            if (pasajeroOpt.isPresent()) {
+                Pasajero pasajero = pasajeroOpt.get();
+                idPasajero = pasajero.getIdPasajero();
+                nombrePasajero = pasajero.getNombreCompleto();
+            }
+        }
+
+        return new AuthResponse(token, usuario.getEmail(), usuario.getRol(), idPasajero, nombrePasajero);
     }
 
     @Transactional
