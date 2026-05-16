@@ -1,5 +1,6 @@
 package sv.edu.udb.GestionBoletosAereos.repository;
 
+import org.springframework.transaction.annotation.Transactional;
 import sv.edu.udb.GestionBoletosAereos.model.AsientoEstado;
 import sv.edu.udb.GestionBoletosAereos.model.AsientoVuelo;
 import sv.edu.udb.GestionBoletosAereos.model.Vuelo;
@@ -32,4 +33,10 @@ public interface AsientoVueloRepository extends JpaRepository<AsientoVuelo, Inte
     @Query("SELECT a FROM AsientoVuelo a WHERE a.vuelo = :vuelo AND a.estado = :estado ORDER BY a.fila, a.letra")
     List<AsientoVuelo> findAsientosDisponiblesOrdenados(@Param("vuelo") Vuelo vuelo,
                                                         @Param("estado") AsientoEstado estado);
+
+    // Eliminar asientos por ID de vuelo
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM AsientoVuelo a WHERE a.vuelo.idVuelo = :idVuelo")
+    void deleteByVueloId(@Param("idVuelo") Integer idVuelo);
 }

@@ -31,6 +31,9 @@ public class AdminVueloService {
     @Autowired
     private AsientoService asientoService;
 
+    @Autowired
+    private AsientoVueloRepository asientoVueloRepository;
+
     // Listar todos los vuelos
     public List<VueloResponseDTO> listarTodosLosVuelos() {
         List<Vuelo> vuelos = vueloRepository.findAll();
@@ -166,6 +169,9 @@ public class AdminVueloService {
             throw new RuntimeException("No se puede eliminar el vuelo porque tiene " +
                     reservasActivasCount + " reservas activas. Primero cancele las reservas.");
         }
+
+        // Eliminar asientos del vuelo (FOREIGN KEY constraint)
+        asientoVueloRepository.deleteByVueloId(id);
 
         // Validación 2: Si hay reservas canceladas, desasociarlas del vuelo
         if (!reservas.isEmpty()) {
