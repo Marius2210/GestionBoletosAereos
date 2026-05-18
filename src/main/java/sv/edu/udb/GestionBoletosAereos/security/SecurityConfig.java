@@ -1,6 +1,5 @@
-package sv.edu.udb.GestionBoletosAereos.config;
+package sv.edu.udb.GestionBoletosAereos.security;
 
-import sv.edu.udb.GestionBoletosAereos.security.JwtAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,9 +31,15 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**",
+                        .requestMatchers(
+                                "/api/auth/**",
                                 "/swagger-ui/**",
+                                "/swagger-ui.html",
                                 "/v3/api-docs/**",
+                                "/v3/api-docs",
+                                "/api-docs/**",
+                                "/swagger-resources/**",
+                                "/webjars/**",
                                 "/api/usuarios/registrar").permitAll()
                         .requestMatchers("/api/vuelos/disponibles").authenticated()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
