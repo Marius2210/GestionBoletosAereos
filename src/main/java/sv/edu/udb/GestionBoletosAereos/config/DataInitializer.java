@@ -38,7 +38,7 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        // Crear usuario ADMIN si no existe
+        // Crear usuario ADMIN
         if (!usuarioRepository.existsByEmail("admin@aerolinea.com")) {
             Usuario admin = new Usuario();
             admin.setEmail("admin@aerolinea.com");
